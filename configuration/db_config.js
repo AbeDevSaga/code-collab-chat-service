@@ -1,23 +1,24 @@
 const mongoose = require("mongoose");
 const dotenv = require('dotenv');
-const assignProjects = require("../seeds/seedProjects");
 dotenv.config();
 
 // Import models
-const File = require("../models/file");
-const Project = require("../models/project"); 
+const ChatGroup = require("../models/chatGroup");
+const Invitation = require("../models/invitation"); 
+const Message = require("../models/message");
 const User = require("../models/user"); 
+const Project = require("../models/project"); 
 const Organization = require("../models/organization");
-const Task = require("../models/task");
 
 const connectDB = async () => {
   try {
     // Register models before connecting
-    mongoose.model("File", File.schema);
+    mongoose.model("ChatGroup", ChatGroup.schema);
+    mongoose.model("Invitation", Invitation.schema);
+    mongoose.model("Message", Message.schema);
     mongoose.model("Project", Project.schema);
-    mongoose.model("User", User.schema);
     mongoose.model("Organization", Organization.schema);
-    mongoose.model("Task", Task.schema);
+    mongoose.model("User", User.schema);
 
     await mongoose.connect(process.env.MONGO_URI);
     console.log('Connected to MongoDB')
