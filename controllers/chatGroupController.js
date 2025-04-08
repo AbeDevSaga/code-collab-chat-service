@@ -40,6 +40,41 @@ const createChat = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+//get all chats
+const getAllChats = async (req, res) => {
+  try {
+    const chats = await Chat.find()
+      .populate("project")
+      .populate("participants.user");
+    res.status(200).json(chats);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+const getOrganizationChats = async (req, res) => {
+  try {
+    const organizationId = req.params.id;
+    const chats = await Chat.find({ organization: organizationId })
+      .populate("project")
+      .populate("participants.user");
+    res.status(200).json(chats);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+// get all chats for a specific project
+const getProjectChats = async (req, res) => {
+  try {
+    const projectId = req.params.id;
+    const chats = await Chat.find({ project: projectId })
+      .populate("participants.user", "username email profileImage")
+      .populate("lastMessage")
+      .sort({ updatedAt: -1 });
+    res.status(200).json(chats);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 // Get all chats for a user
 const getUserChats = async (req, res) => {
   try {
@@ -49,7 +84,7 @@ const getUserChats = async (req, res) => {
       "participants.user": userId,
       "participants.status": "active",
     })
-      .populate("participants.user", "name email avatar")
+      .populate("participants.user", "username email profileImage")
       .populate("lastMessage")
       .sort({ updatedAt: -1 });
 
@@ -69,7 +104,7 @@ const getChatById = async (req, res) => {
       "participants.user": userId,
       "participants.status": "active",
     })
-      .populate("participants.user", "name email avatar")
+      .populate("participants.user", "username email profileImage")
       .populate("project", "name")
       .populate("lastMessage");
 
@@ -257,6 +292,9 @@ const removeParticipant = async (req, res) => {
 
 module.exports = {
   createChat,
+  getAllChats,
+  getOrganizationChats,
+  getProjectChats,
   getUserChats,
   getChatById,
   updateChat,

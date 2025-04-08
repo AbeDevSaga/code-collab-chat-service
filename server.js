@@ -24,7 +24,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/api/chat", require("./routes/projectRoutes")); // Project-related routes
+app.use("/api/chat-group", require("./routes/chatGroupRoutes")); // Chat-related routes
 
 app.get("/", (req, res) => {
   res.send(
