@@ -5,12 +5,13 @@ const { generateToken } = require("../utils/helpers");
 // Create a new chat group (project or private)
 const createChat = async (req, res) => {
   try {
-    const { name, description, isGroupChat, projectId, userIds } = req.body;
-    const createdBy = req.user._id;
+    const { name, avatar, description, isGroupChat, projectId, participants } = req.body;
+    const createdBy = req.user.id;
 
     // Create the chat
     const newChat = new Chat({
       name,
+      avatar,
       description,
       isGroupChat: isGroupChat !== false, // Default to true if not specified
       project: projectId || null,
@@ -19,7 +20,7 @@ const createChat = async (req, res) => {
     });
 
     // Add other participants if provided
-    if (userIds && userIds.length > 0) {
+    if (participants && participants.length > 0) {
       const uniqueUserIds = [...new Set(userIds)]; // Remove duplicates
       for (const userId of uniqueUserIds) {
         if (userId.toString() !== createdBy.toString()) {
@@ -67,7 +68,7 @@ const getProjectChats = async (req, res) => {
   try {
     const projectId = req.params.id;
     const chats = await Chat.find({ project: projectId })
-      .populate("participants.user", "username email profileImage")
+      .populate("participants")
       .populate("lastMessage")
       .sort({ updatedAt: -1 });
     res.status(200).json(chats);
@@ -84,7 +85,7 @@ const getUserChats = async (req, res) => {
       "participants.user": userId,
       "participants.status": "active",
     })
-      .populate("participants.user", "username email profileImage")
+      .populate("participants")
       .populate("lastMessage")
       .sort({ updatedAt: -1 });
 
@@ -104,7 +105,11 @@ const getChatById = async (req, res) => {
       "participants.user": userId,
       "participants.status": "active",
     })
-      .populate("participants.user", "username email profileImage")
+      .populate({
+        path: "participants.user",
+        select: "username email profileImage role status", // Include the fields you want
+        model: "User"
+      })
       .populate("project", "name")
       .populate("lastMessage");
 

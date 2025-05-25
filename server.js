@@ -24,11 +24,12 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/api/chat-group", require("./routes/chatGroupRoutes")); // Chat-related routes
+app.use("/api/chat-group", require("./routes/chatGroupRoutes")); 
+app.use("/api/messages", require("./routes/messageRoutes"));
 
 app.get("/", (req, res) => {
   res.send(
-    "<h1>Welcome to the Project Service!</h1><p>Use the /api/projects route to manage projects.</p>"
+    "<h1>Welcome to the chat-group Service!</h1><p>Use the /api/projects route to manage projects.</p>"
   );
 });
 

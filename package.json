@@ -19,9 +19,10 @@
     "express-validator": "^7.2.0",
     "isomorphic-git": "^1.29.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.8.4"
+    "mongoose": "^8.8.4",
+    "redis": "^4.7.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.7"
+    "nodemon": "^3.1.9"
   }
 }
